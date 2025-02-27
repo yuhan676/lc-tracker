@@ -1,0 +1,125 @@
+# Array 
+## Data structure features
+* Collection of data of the same type stored in contiguous memory space
+* Index starts with 0
+![101 102 103 104 105 106 107](https://github.com/user-attachments/assets/b5757855-3661-4b99-9bc0-36e6e7ae9652)
+
+## Memory Storage of array
+* Due to continuous storage, adding/ removing element will affect the position of the elements after the added/ removed element
+* 2D arrays (Containing rows and columns)’s address is continuous in languages with pointers (C & C++)
+* But in JAVA there is no pointers and the memory address is not exposed to programmers (handled by Java Virtual Machine (JVM) instead. Each individual ‘row’ can be stored at different memory locations
+    * 1D arrays, elements stored in contiguous memory location
+    * 2D arrays, outer array is contiguous, but inner array may not be contiguous
+ 
+## 704 Binary search
+https://leetcode.com/problems/binary-search/description/
+### 左开右闭
+left <= right 为合法区间
+记得有3个case：target， < target， > target
+```java
+class Solution {
+    public int search(int[] nums, int target) {
+        int right = nums.length -1;
+        int left = 0;
+        while (left <= right){
+            int mid = (left + right) /2;
+            if (nums[mid] == target){
+                return mid;
+            } else if (nums[mid] < target) {
+                left = mid +1;
+            }
+            else{
+                right = mid -1;
+            }
+        }
+         return -1;
+    }
+}
+```
+
+## 27 Remove Element
+https://leetcode.com/problems/remove-element/
+### Brute Force
+* 两层for循环，检查到了一个就持续一环套一环地把value换到最后
+```java
+//时间复杂度O(n^2)的两层for循环，空间复杂度O(1)
+class Solution {
+    public int removeElement(int[] nums, int val) {
+        int n = nums.length;
+        for  (int i = 0; i < n; i ++){
+            if (nums[i] == val){
+                for (int j = i+1; j < n; j++){
+                    nums[j - 1] = nums[j];
+                }
+            i --; //因为i后一位和前一位调换了所以需要退回到原位来继续检查
+            n --; //因为最后一位被替换成了val，所以最后一位之前的才算有效
+            }
+        }
+        return n;
+    }
+}
+```
+### 快慢指针
+* 快指针用来遍历整个数组
+* 慢指针指向下一个需要填充非target的位置
+* 最后返回慢指针，从0到慢指针的位置就都是valid value
+* note that slow only increments if the replacement of fast -> slow happens
+* fast always increments
+* Time Complexity O(n) (because there is only 1 iteration)
+```java
+class Solution {
+    public int removeElement(int[] nums, int val) {
+        int slow = 0;
+        int fast = 0;
+        int n = nums.length;
+        while (slow < n && fast < n) {
+            if (nums[fast] != val){ //检查到任何不等于val的元素
+                nums[slow] = nums[fast];//就放到slow的位置
+                slow ++;
+            }
+            fast ++;
+        }
+        return slow;
+    }
+}
+```
+## 977 Squares of a Sorted Array
+https://leetcode.com/problems/squares-of-a-sorted-array/
+### Brute force
+* note how arrays are sorted in java: **Arrays.sort(arrayname)**
+* iterates through the array and replacing the original array with the squared value, then sort it
+* Time Complexity O(n + nlog n)
+```java
+class Solution {
+    public int[] sortedSquares(int[] nums) {
+        for (int i = 0; i < nums.length; i++){
+            nums[i] = nums[i] * nums[i];
+        }
+        Arrays.sort(nums);
+        return nums;
+    }
+}
+```
+### TwoPointers
+* 思路： 因为是升序数组所以左右两边的绝对值最大
+* 从左右两边找平方最大的数，从result array的最右边开始填充
+```java
+class Solution {
+    public int[] sortedSquares(int[] nums) {
+        int r = nums.length - 1;
+        int l = 0;
+        int[] res = new int[nums.length];// java创建数组的时候要说明长度
+        int index = res.length - 1; //因为我们从两端遍历，两端的平方是最大的，所以填充result的时候从最大往最小
+        while (l <= r){
+            if (nums[l] * nums[l] > nums[r] * nums[r]){
+                res[index--] = nums[l] * nums[l];//index--的意思是index先赋值再-1
+                l++;//这里其实++l也可以，这是pre-increment,先让l+1然后返回更新后的值。因为没有用到返回值所以无所谓
+            }else{
+                res[index--] = nums[r] * nums[r];
+                r--;
+            }
+        }
+        return res;
+    }
+}
+```
