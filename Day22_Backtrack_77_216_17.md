@@ -311,3 +311,8 @@ class Solution {
     }
 }
 ```
+* 两个解法的时间和空间复杂度
+* 时间：
+* ![Screenshot 2025-03-21 at 22 07 31](https://github.com/user-attachments/assets/c96de0a6-dff1-4369-977a-99fb02df4ea1)
+* 空间
+* ![Screenshot 2025-03-21 at 22 09 12](https://github.com/user-attachments/assets/cedca1df-c299-4b12-a2e7-db4c0f7cb54a)
