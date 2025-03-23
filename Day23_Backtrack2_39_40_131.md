@@ -210,6 +210,7 @@ for (int i = startIndex; i <candidates.length && sum +candidates[i]<=target; i++
                 path.add(sb.toString());
                 //遇到了合适的结果才递归
                 backtracking(s,i+1,new StringBuilder());
+                //这里撤销意味着这条path的内容已经满了，回溯把path撤回空的状态，好找下一种切割方式切出来path的结果
                 path.remove(path.size()-1);
             }
         }
