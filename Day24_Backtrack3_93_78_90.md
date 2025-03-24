@@ -159,3 +159,69 @@ class Solution {
 	}
 }
 ```
+## 78. Subsets：
+* https://leetcode.com/problems/subsets/description/
+* 文章：https://programmercarl.com/0078.%E5%AD%90%E9%9B%86.html#%E7%AE%97%E6%B3%95%E5%85%AC%E5%BC%80%E8%AF%BE
+* 视频：https://www.bilibili.com/video/BV1U84y1q7Ci?vd_source=62d2d5517cc65d630d19b32ed3dcf9c5&spm_id_from=333.788.videopod.sections
+* 子集问题收集所有节点，但是之前的组合和分割问题收集的是所有叶子节点
+* 自己问题本质上也是组合问题，因为12和21算是同样的结果
+* 所以每到一个节点，都要paht.add(nums[i])
+* 组建res的规律：先res.add(path)（确保第一个空元素也被加进去）,然后每遇到一个节点path都要加上这个节点，然后递归（startindex+1)，回溯
+* 回溯三部曲
+	 * 全局变量path为子集手机元素，res存放子集组合
+	 * 参数：nums, startIndex
+	 * 终止条件：剩余集合为空，到达叶子节点，startIndex>=num.size()的时候就可以return（）了，但其实可以不加，因为startIndex >= nums.size()，本层for循环本来也结束了。
+ 	 * 单层循环逻辑：**子集问题不需要任何剪枝，需要遍历整棵树** for(int i = startIndex; i<num.size(); i++){path.add(num[i]);处理节点 backtrack(nums,i+1)；递归 path.remove(path.size()-1)；回溯
+* 时间复杂度: O(n * 2^n)
+* 空间复杂度: O(n)
+* 没搞懂的地方：为什么终止条件可有可无，而且为什么他的位置放在res.addpath以后会导致错误
+```java
+class Solution {
+    List<List<Integer>> res = new ArrayList<>();
+    List<Integer> path = new ArrayList<>();
+
+    public List<List<Integer>> subsets(int[] nums) {
+        backtrack(nums,0);
+        return res;
+    }
+
+    private void backtrack(int[]nums, int startIndex){
+        res.add(new ArrayList<>(path));
+        if (startIndex >= nums.length) return;//可有可无，但一定要放在上一条后面，否则最后那一层的子集不会加入，导致部分结果丢失
+
+
+        for (int i = startIndex; i<nums.length; i++){
+            path.add(nums[i]);
+            backtrack(nums,i+1);
+            path.remove(path.size()-1);
+        }
+    }
+}
+```
+## 90. Subsets II
+* https://leetcode.com/problems/subsets-ii/description/
+* 文章：https://programmercarl.com/0090.%E5%AD%90%E9%9B%86II.html#%E5%85%B6%E4%BB%96%E8%AF%AD%E8%A8%80%E7%89%88%E6%9C%AC
+* 视频： https://www.bilibili.com/video/BV1vm4y1F71J?vd_source=62d2d5517cc65d630d19b32ed3dcf9c5&spm_id_from=333.788.videopod.sections
+* 本题和40.组合总和很像，都需要在for循环里去重，但是递归的时候不去重，就能保证每个元素只能被用一次
+*![image](https://github.com/user-attachments/assets/0beccc5d-3fcb-43e3-bf84-981047023123)
+```java
+class Solution {
+    List<List<Integer>> res = new ArrayList<>();
+    List<Integer> path = new ArrayList<>();
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        Arrays.sort(nums);
+        backtrack(nums,0);
+        return res;
+    }
+    private void backtrack(int[]nums, int startIndex){
+        res.add(new ArrayList<>(path));
+        for (int i = startIndex; i<nums.length; i++){
+            //这里注意i是大于startindex不是大于0，不然会跳过一些有效的层
+            if (i>startIndex && nums[i]==nums[i-1]){continue;}
+            path.add(nums[i]);
+            backtrack(nums,i+1);
+            path.remove(path.size()-1);
+        }
+    }
+}
+```
