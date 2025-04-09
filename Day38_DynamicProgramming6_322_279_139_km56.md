@@ -118,7 +118,56 @@ class Solution {
 * 卡玛网56练习题：https://kamacoder.com/problempage.php?pid=1066
 * 多重背包就是每个物品可以使用大于一次但不是无限次
 * 我们把它展开做成一个01背包就好（物品0可以用3次，变成物品0，物品0，物品0—），就变成每个物品只能使用一次了
-* **二刷再看**
+* **二刷重温**
+### 展开成01背包
+* 时间复杂度：O(m × n × k)，m：物品种类个数，n背包容量，k单类物品数量
+* 空间复杂度：n+ kn
+```java
+import java.util.*;
+public class Main{
+    public static void main (String[] args){
+        Scanner sc = new Scanner(System.in);
+        int C = sc.nextInt();
+        int N = sc.nextInt();
+        int[] weights = new int[N];
+        int[] values = new int[N];
+        int[] count = new int[N];
+
+        int totalcount = 0;
+        for (int i=0; i<N; i++){
+            weights[i] = sc.nextInt();
+        }
+        for (int i=0; i<N; i++){
+            values[i] = sc.nextInt();
+        }
+        for (int i=0; i<N; i++){
+            count[i] = sc.nextInt();
+            totalcount += count[i];
+        }
+        
+        int[] expandedweights = new int[totalcount];
+        int[] expandedvalues = new int[totalcount];
+        //这里要用指针记录我们填充过多少个物品了，不然每次新的i循环j都会被重置成0
+        int index = 0;
+        for (int i=0; i<N;i++){
+            for (int j=0; j<count[i];j++){
+                expandedweights[index] = weights[i];
+                expandedvalues[index] = values[i];
+                index++;
+            }
+        }
+        //使用一维背包，外层物品内层容量，内层到序遍历
+        int dp[] = new int[C+1];
+        for (int i = 0; i<totalcount;i++){
+            for (int j=C; j>=expandedweights[i];j--){
+                dp[j] = Math.max(dp[j],dp[j-expandedweights[i]]+ expandedvalues[i]);
+            }
+        }
+        System.out.print(dp[C]);
+    }
+}
+```
+
 # 背包问题总结篇
 https://programmercarl.com/%E8%83%8C%E5%8C%85%E6%80%BB%E7%BB%93%E7%AF%87.html#%E6%80%BB%E7%BB%93
 
