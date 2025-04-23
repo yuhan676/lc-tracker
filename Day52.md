@@ -319,5 +319,103 @@ public class Main{
 * 文章：https://www.programmercarl.com/kamacoder/0103.%E6%B0%B4%E6%B5%81%E9%97%AE%E9%A2%98.html#%E6%80%9D%E8%B7%AF
 * 视频：https://www.bilibili.com/video/BV1WNoEYrEio?vd_source=62d2d5517cc65d630d19b32ed3dcf9c5&spm_id_from=333.788.videopod.sections
 * 这一题也是dfs和bfs都可以解决的
-### dfs（可能超时）
-* 暴力解法
+### dfs暴力解法（可能超时）
+* 从每一个格子出发去寻找水能留到哪里，能流到的格子用一个visited[][] (boolean) 来储存
+* 另外写一个reachedBorders来检查visited[][]，包不包括能再border的格子
+* 时间复杂度：O(n^2*m^2), 因为遍历所有格子需要O(m*n),每个格子构建visited又需要（m*n)
+* 空间复杂度
+* <img width="806" alt="Screenshot 2025-04-23 at 19 29 40" src="https://github.com/user-attachments/assets/e89b178d-1f6d-4b37-bd20-0db8f18cd414" />
+```java
+
+import java.util.*;
+import java.util.*;
+
+public class Main{
+
+    static int[][] dir = {{0,1},{1,0},{0,-1},{-1,0}};
+    static Queue<int[]> ans = new LinkedList<>();
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+        int[][] grid = new int[n][m];
+
+        for (int i=0;i<n;i++){
+            for (int j=0;j<m;j++){
+                grid[i][j] = sc.nextInt();
+            }
+        }
+        for (int i=0;i<n;i++){
+            for (int j=0;j<m;j++){
+                boolean[][] visited = new boolean[n][m];
+                //这里记得一定要标记当前格子为visited
+                visited[i][j] = true;
+                dfs(grid,visited,i,j);
+                if (reachedBorders(visited)){
+                    ans.add(new int[] {i,j});
+                }
+            }
+        }
+        while (!ans.isEmpty()){
+            int[] coor = ans.poll();
+            System.out.println(coor[0] + " " + coor[1]);
+        }
+    }
+
+    public static boolean reachedBorders (boolean[][] visited){
+        boolean B1 = false;
+        boolean B2 = false;
+        for (int i=0;i<visited.length;i++){
+            if (visited[i][0]){
+                B1 = true;
+                break;
+            }
+        }
+        if (!B1){
+            for (int j=0;j<visited[0].length;j++){
+            if (visited[0][j]){
+                B1 = true;
+                break;
+            }
+            }
+        }
+        for (int i=0;i<visited.length;i++){
+            if (visited[i][visited[0].length-1]){
+                B2=true;
+                break;
+            }
+        }
+        if (!B2){
+            for (int j=0;j<visited[0].length;j++){
+            if (visited[visited.length-1][j]){
+                B2=true;
+                break;
+            }
+        }
+        }
+        if (B1 && B2) return true;
+        else return false;
+    }
+    public static void dfs (int[][]grid, boolean[][]visited, int x, int y){
+        for (int i=0;i<4;i++){
+            int nextX = x + dir[i][0];
+            int nextY = y + dir[i][1];
+            if (nextX<0|| nextY<0 || nextX >= grid.length || nextY >= grid[0].length){
+                continue;
+            }
+            if (!visited[nextX][nextY] && grid[nextX][nextY]<= grid[x][y]){
+                visited[nextX][nextY] = true;
+                dfs(grid,visited,nextX,nextY);
+            }
+        }
+    }
+}
+```
+### 优化以后dfs
+* dfs方程改成查找“能流到当前格子的临近格子”
+* 从border1和2开始出发寻找，生成两个visited【】【】
+* 对比两个visited，如果两个表格同时含有同一个格子，说明这个格子可以流水到border1和2
+```java
+
+```
+
