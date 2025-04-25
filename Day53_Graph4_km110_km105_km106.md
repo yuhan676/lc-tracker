@@ -195,4 +195,109 @@ public class Main{
 
 ## km106. 岛屿的周长
 * https://kamacoder.com/problempage.php?pid=1178
-* 
+* 文章：https://www.programmercarl.com/kamacoder/0106.%E5%B2%9B%E5%B1%BF%E7%9A%84%E5%91%A8%E9%95%BF.html#%E6%80%9D%E8%B7%AF
+* 思路：遍历岛屿的每一个格子：上下左右方向，如果碰到水或者出界，说明找到一条边，周长++。不然的话就是找到了陆地，走到下一个格子
+### dfs
+```java
+import java.util.*;
+public class Main{
+    static int n;
+    static int m;
+    static final int[][] dir = {{0,1},{1,0},{0,-1},{-1,0}};
+    static int peri = 0;
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        n = sc.nextInt();
+        m = sc.nextInt();
+        int[][] grid = new int[n][m];
+        for (int i = 0; i<n;i++){
+            for (int j=0;j<m;j++){
+                grid[i][j] = sc.nextInt();
+            }
+        }
+        boolean[][] visited = new boolean[n][m];
+        for (int i =0;i<n;i++){
+            for (int j=0; j<m;j++){
+                if (!visited[i][j] && grid[i][j]==1){
+                    visited[i][j]=true;
+                    dfs(grid,visited,i,j);
+                }
+            }
+        }
+        System.out.print(peri);
+    }
+
+    public static void dfs (int[][] grid, boolean[][] visited, int x, int y){
+        for (int i=0;i<4;i++){
+            int nextX = x + dir[i][0];
+            int nextY = y + dir[i][1];
+
+            if (nextX <0 || nextY <0 || nextX>=n || nextY >=m || grid[nextX][nextY]==0){
+                peri ++;
+                continue;
+                //这里不能直接return！因为我们还要遍历其他的方向
+                //加了continue吗就会直接进入下一个i的值的for循环步骤，不会继续执行下面的if，就放值了越界访问
+            }
+            if (!visited[nextX][nextY]&&grid[nextX][nextY]==1){
+                visited[nextX][nextY]=true;
+                dfs(grid,visited,nextX,nextY);
+            }
+        }
+    }
+}
+```
+### bfs
+```java
+import java.util.*;
+public class Main{
+    static int n;
+    static int m;
+    static final int[][] dir = {{0,1},{1,0},{0,-1},{-1,0}};
+    static int peri = 0;
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        n = sc.nextInt();
+        m = sc.nextInt();
+        int[][] grid = new int[n][m];
+        for (int i = 0; i<n;i++){
+            for (int j=0;j<m;j++){
+                grid[i][j] = sc.nextInt();
+            }
+        }
+        boolean[][] visited = new boolean[n][m];
+        for (int i =0;i<n;i++){
+            for (int j=0; j<m;j++){
+                if (!visited[i][j] && grid[i][j]==1){
+                    visited[i][j]=true;
+                    bfs(grid,visited,i,j);
+                }
+            }
+        }
+        System.out.print(peri);
+    }
+
+    public static void bfs (int[][] grid, boolean[][] visited, int x, int y){
+        Queue<int[]> que = new LinkedList<>();
+        que.add(new int[] {x,y});
+        while (!que.isEmpty()){
+            int[] curXY = que.poll();
+            int currX = curXY[0];
+            int currY = curXY[1];
+            for (int i=0;i<4;i++){
+                int nextX = currX + dir[i][0];
+                int nextY = currY + dir[i][1];
+
+                if (nextX <0 || nextY <0 || nextX>=n || nextY >=m || grid[nextX][nextY]==0){
+                    peri ++;
+                    continue;
+                }
+                if (!visited[nextX][nextY]&&grid[nextX][nextY]==1){
+                    que.add(new int[]{nextX,nextY});
+                    visited[nextX][nextY]=true;
+                }
+            }
+        }
+        
+    }
+}
+```
