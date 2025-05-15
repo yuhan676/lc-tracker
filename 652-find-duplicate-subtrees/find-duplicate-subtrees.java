@@ -31,11 +31,11 @@ class Solution {
         String right = constructString(root.right);
         String myself = sb.append(left + "," + right + "," + root.val).toString();
 
-        int frequency = map.getOrDefault(myself,0);
-        if (frequency==1){
+        map.put(myself,map.getOrDefault(myself,0)+1);
+        int frequency = map.get(myself);
+        if (frequency==2){
             res.add(root);
         }
-        map.put(myself, frequency + 1);
         return myself;
     }
 }
