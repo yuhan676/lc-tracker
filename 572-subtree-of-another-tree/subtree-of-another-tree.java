@@ -14,31 +14,23 @@
  * }
  */
 class Solution {
-    final String SEP = ",";
-    final String NULL = "#";
     public boolean isSubtree(TreeNode root, TreeNode subRoot) {
-        String subTree = serialize(subRoot);
-        String tree = serialize(root);
-        if (tree.contains(subTree)) return true;
-        return false;
-        
+        return helper(root,subRoot);
     }
 
-    String serialize(TreeNode root){
-        StringBuilder sb = new StringBuilder();
-        if (root==null) return sb.toString();
-        _serialize(root,sb);
-        return sb.toString();
-
+    private boolean helper(TreeNode p, TreeNode q){
+        if (p==null) return false;
+        if (isSameTree(p,q)) return true;
+        //if the root is not the same as subroot, check if the subtrees of root are the same as subtree
+        //even if one of the root's subtree is the same as the given subtree, return true;
+        return (helper(p.left, q) || helper(p.right,q));
     }
-
-    void _serialize(TreeNode root, StringBuilder sb){
-        if (root==null){
-            sb.append(SEP).append(NULL);
-            return;
-        }
-        sb.append(SEP).append(root.val);
-        _serialize(root.left, sb);
-        _serialize(root.right,sb);
+    private boolean isSameTree(TreeNode p, TreeNode q){
+        //checks if two trees are the same
+        if (p==null && q==null) return true;
+        if (p==null || q == null) return false;
+        if (p.val != q.val) return false;
+        //if root nodes are the same, check if the left and right subtrees are the same
+        return (isSameTree(p.left, q.left) && isSameTree(p.right,q.right));
     }
 }
