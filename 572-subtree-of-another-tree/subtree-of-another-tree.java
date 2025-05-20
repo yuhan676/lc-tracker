@@ -18,19 +18,8 @@ class Solution {
     final String NULL = "#";
     public boolean isSubtree(TreeNode root, TreeNode subRoot) {
         String subTree = serialize(subRoot);
-        Queue<TreeNode> que = new LinkedList<>();
-        que.offer(root);
-        while (!que.isEmpty()){
-            int sz = que.size();
-            for (int i=0; i<sz;i++){
-                TreeNode parent = que.poll();
-                if (parent.val == subRoot.val){
-                    if (serialize(parent).equals(serialize(subRoot))) return true;
-                }
-                if (parent.left != null) que.offer(parent.left);
-                if (parent.right != null) que.offer(parent.right);
-            }
-        }
+        String tree = serialize(root);
+        if (tree.contains(subTree)) return true;
         return false;
         
     }
@@ -45,10 +34,10 @@ class Solution {
 
     void _serialize(TreeNode root, StringBuilder sb){
         if (root==null){
-            sb.append(NULL).append(SEP);
+            sb.append(SEP).append(NULL);
             return;
         }
-        sb.append(root.val).append(SEP);
+        sb.append(SEP).append(root.val);
         _serialize(root.left, sb);
         _serialize(root.right,sb);
     }
