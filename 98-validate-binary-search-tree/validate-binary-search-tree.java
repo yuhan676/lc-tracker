@@ -14,24 +14,14 @@
  * }
  */
 class Solution {
-    List<Integer> inorderList = new LinkedList<>();
+    long max = Long.MAX_VALUE;
+    long min = Long.MIN_VALUE;
     public boolean isValidBST(TreeNode root) {
-        if (root==null) return true;
-        if (root.left == null && root.right == null) return true;
-        inorderTraversal(root);
-
-        for(int i=1;i<inorderList.size();i++){
-            if (inorderList.get(i)<= inorderList.get(i-1)){return false;}
-        }
-        return true;
-
-
+        return helper(root,max,min);
     }
-
-    private void inorderTraversal(TreeNode root){
-        if (root==null) return;
-        inorderTraversal(root.left);
-        inorderList.add(root.val);
-        inorderTraversal(root.right);
+    private boolean helper(TreeNode root, long max, long min){
+        if (root==null) return true;
+        if (root.val <= min || root.val >= max) return false;
+        return (helper(root.left, root.val, min) && helper(root.right, max, root.val));
     }
 }
