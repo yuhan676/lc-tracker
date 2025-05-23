@@ -1,14 +1,13 @@
 class TrieNode{
     TrieNode[] arr;
-    boolean end;
+    boolean isEnd;
 
     TrieNode(){
         this.arr = new TrieNode[26];
-        this.end = false;
+        this.isEnd = false;
     }
 }
 class WordDictionary {
-
     TrieNode root;
 
     public WordDictionary() {
@@ -17,40 +16,37 @@ class WordDictionary {
     
     public void addWord(String word) {
         TrieNode curr = root;
-        int c;
-        for (int i =0; i<word.length();i++){
-            c = word.charAt(i) - 'a';
-            if (curr.arr[c] == null){
-                curr.arr[c] = new TrieNode();
+        int index;
+        for (int i =0; i< word.length();i++){
+            index = word.charAt(i) - 'a';
+            if (curr.arr[index] == null){
+                curr.arr[index] = new TrieNode();
             }
-            curr = curr.arr[c];
+            curr = curr.arr[index];
         }
-        curr.end = true;
+        curr.isEnd = true;
     }
     
     public boolean search(String word) {
         return dfs(word, 0, root);
     }
 
-    public boolean dfs(String word, int index, TrieNode currNode){
-        if (currNode == null) return false;
-        if (index == word.length()) return currNode.end;
-
-        if (word.charAt(index)=='.'){
-            for (int i=0;i<26;i++){
-                //这里注意要检查所有非空的子节点
-                //只有子节点非空，而且后序遍历都返回true，才返回true；
-                //我之前写成了if (currNode.arr[i] != null return dfs(word,index+1, currNode.arr[i])),但是那样就只遍历了第一个非空的子节点
-                if (currNode.arr[i]!=null && dfs(word,index+1,currNode.arr[i])){
+    private boolean dfs(String word, int index, TrieNode node){
+        if (node == null) return false;
+        //这里不要写成if (index == word.length() && node.isEnd) return true;
+        if (index == word.length()) return node.isEnd;
+        if (word.charAt(index) == '.'){
+            for (int i =0; i<26;i++){
+                if (node.arr[i]!= null && dfs(word,index+1,node.arr[i])){
                     return true;
                 }
             }
-            return false;
+            //全部迭代完了但是都没找到合适的,就return false
+            return false; 
+        }else{
+            return dfs(word,index +1, node.arr[word.charAt(index) -'a']);
         }
-        else{
-            int c = word.charAt(index) - 'a';
-            return dfs(word,index+1,currNode.arr[c]);
-        }
+        
     }
 }
 
