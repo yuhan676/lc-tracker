@@ -49,7 +49,7 @@ class Solution {
         }
         // first section must point to the beginning of the swapped section now (originally, the last element in the second section)
         firstEnd.next = prev;
-        // the end of the swapped second section points to
+        // the end of the swapped second section points to beginning of the third section (actually it's not necessary to have the thirdStart marker, as we can just point it to curr);
         secondFirst.next = thirdStart;
         //return the new head (if changed)
         return dummyHead.next;
