@@ -10,57 +10,48 @@
  */
 class Solution {
     public ListNode reverseBetween(ListNode head, int left, int right) {
+        // if empty List OR the node to swap is the same ,return
         if (head == null || left == right) return head;
+        //use dummy head to make swapping simpler
         int index = 0;
         ListNode dummyHead = new ListNode();
         dummyHead.next = head;
         ListNode curr = dummyHead;
-        //curr = 0
-        //index = 0
-        //while index < 1-1
+        //find the end of the first section (unswapped)
         while (index < left - 1){
             curr = curr.next;
             index ++;
         }
-        //firstEnd = 0;
         ListNode firstEnd = curr;
-        //while index <= 2;
-        //curr = null;
-        //index = 3;
+        //find the beginning of the third section (unswapped)
         while (index <= right){
             curr = curr.next;
             index ++;
         }
-        //thirdStart = null;
         ListNode thirdStart = curr;
-
-        //prev = 3;
+        //we start swapping from the node at position: left + 1 as curr, because we don't want nodes before left being swapped too 
         ListNode prev = firstEnd.next;
-        //curr = 5
         curr = prev.next;
+        //index indicate the curr node
         index = left + 1;
-        //inex = 2;
+        //mark the beginning of the swapped section (will be the end by the end)
         ListNode secondFirst = prev;
-        //secondFirst = 3;
-        //while index <= 2
-        while (index <= right){
-            ListNode temp = curr.next;
-            //temp = null
-            curr.next = prev;
-            // 5 -> 3;
 
+        //swap until the current node is right, becuase we are dealing with swaping curr and prev
+        while (index <= right){
+            //swapping curr's pointer
+            ListNode temp = curr.next;
+            curr.next = prev;
+            //incrementing prev and curr
             prev = curr;
-            //prev = 5;
             curr = temp;
-            //curr = null;
             index ++;
-            //index = 3;
         }
-        //dummy->5
+        // first section must point to the beginning of the swapped section now (originally, the last element in the second section)
         firstEnd.next = prev;
-        //3->null
-        secondFirst.next = curr;
+        // the end of the swapped second section points to
+        secondFirst.next = thirdStart;
+        //return the new head (if changed)
         return dummyHead.next;
-        
     }
 }
