@@ -1,14 +1,11 @@
 class Solution {
-
-    Map<Integer, String> digit1 = new HashMap<>();
-    Map<Integer, String> digit2 = new HashMap<>();
-    Map<Integer,String> level = new HashMap<>();
-    public String numberToWords(int num) {
-        //Special Case
-        if (num==0) return "Zero";
-        String number = String.valueOf(num);
-
-        //2^31 是billion级别的，所以最多length只能是10
+    //优化成static map
+    static final Map<Integer, String> digit1 = new HashMap<>();
+    static final Map<Integer, String> digit2 = new HashMap<>();
+    static final Map<Integer,String> level = new HashMap<>();
+    //static map initialisation
+    static{
+         //2^31 是billion级别的，所以最多length只能是10
         digit1.put(1, "One");
         digit1.put(2, "Two");
         digit1.put(3, "Three");
@@ -42,70 +39,52 @@ class Solution {
         level.put(1, "Thousand");
         level.put(2, "Million");
         level.put(3, "Billion");
-
+    }
+    public String numberToWords(int num) {
+        //Special Case
+        if (num==0) return "Zero";
+        //简化：不用Integer.parseInt()了，直接num%1000, num /= 1000处理
         int counter = 0;
         StringBuilder sb = new StringBuilder();
-        StringBuilder numsb = new StringBuilder(number);
-        if (number.length() <= 3){
-            return concat3digit(num);
-        }else{
-            while (numsb.length() >3){
-                String currSub = number.substring(numsb.length()-3, numsb.length());
-                int curr3Digit = Integer.parseInt(currSub);
-                //只有在位数不是000的时候才加level名称
-                if (curr3Digit != 0){
-                    //sb.insert(index,string)新方法
-                    String newPhrase = concat3digit(curr3Digit);
-                    String levelMeasure = level.get(counter);
-                    sb.insert(0, newPhrase + " " + levelMeasure + " ");
-                }
-                
-                //sb.setLength(right index) 新方法，不会返回任何东西
-                numsb.setLength(numsb.length()-3);
-                counter ++;
+        while (num >0){
+            int curr3digit = num%1000;
+            if (curr3digit != 0){
+                sb.insert(0,concat3digit(curr3digit) + " " + level.get(counter) + " ");
             }
-            if (numsb.length() == 0) return sb.toString();
-            int lastDigits = Integer.parseInt(numsb.toString().strip());
-            String LastLevel = level.get(counter);
-            String lastPhrase = concat3digit(lastDigits) + " " + LastLevel + " ";
-            sb.insert(0, lastPhrase);
-            return sb.toString().strip();
+            counter ++;
+            num /= 1000;
         }
+        return sb.toString().trim();
+        
     }
     public String concat3digit(int num){
-        String number = String.valueOf(num);
-        boolean allzero = true;
-        for (char c: number.toCharArray()){
-            if (c!='0'){
-                allzero = false;
-                break;
+
+        //简化，直接处理三个digit，不递归
+        if (num == 0) return "";
+        StringBuilder sb = new StringBuilder();
+        int hundred = num/100;
+        int remainder = num%100;
+
+        if (hundred!=0){
+            sb.append(digit1.get(hundred) + " Hundred");
+            if (remainder != 0){
+                sb.append(" ");
             }
         }
-        if (allzero){
-            return "";
-        }
-        int length = number.length();
-        if (number.length()==1) return digit1.get(num);
-        if (number.length()==2){
-            //这里注意char自己有ascii number，所以是相对0来做运算的，直接用valueof是不行的
-            int digitOne = number.charAt(0) - '0';
-            int digitTwo = number.charAt(1) - '0';
-            if (digitOne == 1) return digit1.get(num);
-            else{
-                if (digitTwo == 0) return digit2.get(digitOne);
-                else{
-                    System.out.println(digitOne);
-                    return digit2.get(digitOne) + " " + digit1.get(digitTwo);
+        if (remainder > 0){
+            if (remainder <20){
+                sb.append(digit1.get(remainder));
+            }else{
+                int ten = remainder/10;
+                int unit = remainder%10;
+                sb.append(digit2.get(ten));
+                if (unit != 0){
+                    sb.append(" ").append(digit1.get(unit));
                 }
+                
             }
         }
-        if (number.length()==3){
-            if (number.substring(1).equals("00")){
-                return digit1.get(number.charAt(0) - '0') + " " + "Hundred";
-            }
-            String last2 = concat3digit(Integer.valueOf(number.substring(1)));
-            return digit1.get(number.charAt(0) - '0') + " " + "Hundred" + " " + last2;
-        }
-        return "";
+        return sb.toString();
+
     }
 }
