@@ -1,24 +1,27 @@
 class Solution {
-    Map<String, List<String>> neighbours = new HashMap<>();
+    Map<String, List<String>> allCombo = new HashMap<>();
+
     public int ladderLength(String beginWord, String endWord, List<String> wordList) {
         Set<String> wordSet = new HashSet<>(wordList);
-        if (!wordSet.contains(endWord)) return 0;
-        List<String> beginNeighbour = new LinkedList<>();
-        for (String word: wordSet){
-            if (isNeighbour(beginWord, word)){
-                beginNeighbour.add(word);
+        //SC:n
+        int L = beginWord.length();
+        //remove all words that don't have the right length, cuz we won't do length check later 
+        for (String word: wordList){
+            if (word.length() == L){
+                wordSet.add(word);
             }
         }
-        neighbours.put(beginWord, beginNeighbour);
-
-        for (String word1: wordSet){
-            List<String> wordNeighbours = new LinkedList<>();
-            for (String word2: wordSet){
-                if (isNeighbour(word1,word2)){
-                    wordNeighbours.add(word2);
-                }
+        if (!wordSet.contains(endWord)) return 0;
+        //SC: N * L entry
+        //TC: n * L ^ 2
+        for (String word: wordSet){
+            for (int i=0; i<L;i++){
+                //注意substring没有大写
+                //each pattern's concatination is O(L)
+                String pattern = word.substring(0,i) + "*" + word.substring(i+1);
+                //注意这里是先computeifabsent再add
+                allCombo.computeIfAbsent(pattern, k -> new ArrayList<String>()).add(word);
             }
-            neighbours.put(word1, wordNeighbours);
         }
         Set<String> visited = new HashSet<>();
         int steps = 1;
@@ -31,31 +34,19 @@ class Solution {
             for (int i=0; i<sz;i++){
                 String curr = que.poll();
                 if (curr.equals(endWord)) return steps;
-                for (String vocab: neighbours.get(curr)){
-                    if (!visited.contains(vocab)){
-                        que.offer(vocab);
-                        visited.add(vocab);
+                for (int j =0; j<L;j++){
+                    String pattern = curr.substring(0,j) + "*" + curr.substring(j+1);
+                    //这里用Collections.emptyList（）比new ArrayList()节省空间
+                    for (String word: allCombo.getOrDefault(pattern, Collections.emptyList())){
+                        if (!visited.contains(word)){
+                            que.offer(word);
+                            visited.add(word);
+                        }
                     }
                 }
             }
             steps ++;
         }
         return 0;
-    }
-
-    public boolean isNeighbour(String s, String t){
-        if (s.equals(t)) return false;
-        if (s.length() != t.length()) return false;
-        int diff = 0;
-        for (int i=0; i< s.length();i++){
-            if (s.charAt(i) != t.charAt(i)){
-                diff ++;
-                if (diff > 1) return false;
-            }
-        }
-        if (diff == 1){
-            return true;
-        } 
-        return false;
     }
 }
