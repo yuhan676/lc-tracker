@@ -3,6 +3,7 @@ class Solution {
         int n = chargeTimes.length;
         MonoDeque mq = new MonoDeque();
         int left = 0;
+        //这个记住是一个edge case，一定要初始化成long，不然会溢出-> Integer Overvlow
         long rcSum = 0;
         long totalCost = 0;
         int maxRobot = 0;
