@@ -2,14 +2,6 @@ class Solution {
     public List<Integer> goodDaysToRobBank(int[] security, int time) {
         int n = security.length;
         List<Integer> res = new LinkedList<>();
-        if (time ==0) {
-            for(int i = 0; i< n;i++){
-                res.add(i);
-            }
-            return res;
-        }
-        if (n < time *2) return res;
-
         //constructing nonInc && nonDec int[] to save TC
         int[] nonInc = new int[n];
         int[] nonDec = new int[n];
