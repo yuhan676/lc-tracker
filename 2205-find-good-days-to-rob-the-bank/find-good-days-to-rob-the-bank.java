@@ -21,8 +21,7 @@ class Solution {
                 nonDec[i] = 0;
             }
         }
-        System.out.print(Arrays.toString(nonInc));
-        System.out.print(Arrays.toString(nonDec));
+
         for (int i=time; i<n-time;i++){
             if (nonInc[i]>=time && nonDec[i]>=time){
                 res.add(i);
