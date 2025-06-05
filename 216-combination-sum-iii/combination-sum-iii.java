@@ -12,7 +12,12 @@ class Solution {
             res.add(new LinkedList<>(path));
             return;
         }
-        for (int i = startIndex; i<= 9; i++){
+        //剪枝
+        //k- path.size() = 还需要多少个
+        //假设k==2， pathsize（）==0
+        //最后遍历到8,9(最后一个size==2==k的组合)，那么8是起点
+        //8 = 9 - (2-0) +1;
+        for (int i = startIndex; i<= 9 - (k-path.size()) + 1; i++){
             path.add(i);
             sum += i;
             //记住这里是startindex+1
