@@ -1,20 +1,20 @@
 class Solution {
-    List<List<Integer>> res;
+    List<List<Integer>> res = new LinkedList<>();
     List<Integer> path = new LinkedList<>();
-    Set<List<Integer>> resSet = new HashSet<>();
 
     public List<List<Integer>> findSubsequences(int[] nums) {
         backtrack(nums,0);
-        res = new LinkedList<>(resSet);
         return res;
     }
 
     private void backtrack(int[] nums, int start){
         if (isValid(path)){
-            resSet.add(new LinkedList<>(path));
+            res.add(new LinkedList<>(path));
         }
+        //当层的map
         Map<Integer, Boolean> used = new HashMap<>();
         for (int i = start; i<nums.length;i++){
+            //检查当前层，同元素有没有被用过
             if(used.containsKey(nums[i])){continue;}
             used.put(nums[i],true);
             if (path.isEmpty() || nums[i] >= path.getLast()){
