@@ -10,12 +10,13 @@ class Solution {
     }
 
     private void backtrack(int[] nums, int start){
-        // if (start>= nums.length) return;
         if (isValid(path)){
             resSet.add(new LinkedList<>(path));
         }
+        Map<Integer, Boolean> used = new HashMap<>();
         for (int i = start; i<nums.length;i++){
-            //getLast的时间复杂度是什么？
+            if(used.containsKey(nums[i])){continue;}
+            used.put(nums[i],true);
             if (path.isEmpty() || nums[i] >= path.getLast()){
                 path.add(nums[i]);
                 backtrack(nums,i+1);
