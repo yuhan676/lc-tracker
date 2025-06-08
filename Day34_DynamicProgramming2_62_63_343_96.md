@@ -173,6 +173,7 @@ class Solution {
             for (int j = 1; j<=i/2 ;j++){
                 //每次过一个j，dp[i]都有可能更新，所以要比较现在的值和新的值
                 //j*(i-j)是2数相乘，dp[i-j]*j是3数相乘，3最接近3的值，就能最大化results
+                //二刷：上面这个说法是不对的，理解成拆成两个数或者拆成多个数更好，具体看notion：错题本，动态规划篇
                 dp[i] = Math.max(dp[i],Math.max(j*(i-j), j*dp[i-j]));
             }
         }
