@@ -319,6 +319,7 @@ class Solution {
 ## 01背包一维数组解法
 * 时间复杂度：O(n^2)
 * 空间复杂度：O(n)，虽然dp数组大小为一个常数，但是大常数
+* 二刷更正：并不是的哈，n 和target的大小量级没有关系，时间是O (n * target), 空间是target。前面的同理
 
 ```java
 class Solution {
