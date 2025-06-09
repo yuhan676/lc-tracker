@@ -1,14 +1,23 @@
 class Solution {
+    Map<String, Integer> memo= new HashMap<>();
+
     public int change(int amount, int[] coins) {
-        int[] dp = new int[amount +1];
-        for (int j = 0; j<=amount;j++){
-            if (j%coins[0] == 0) dp[j] = 1;
+        return (getMaxCombi(amount, coins, 0, 0));
+    }
+
+    public int getMaxCombi(int amount, int[] coins, int index, int currSum){
+        //这里currsum剪枝是对的吗？coins[i] >=1
+        if (index >= coins.length || currSum > amount) return 0;
+        if ( index < coins.length && currSum == amount) return 1;
+        String key = index + "," + currSum;
+        if (memo.containsKey(key)) return memo.get(key);
+        int skip = getMaxCombi(amount, coins, index+1, currSum);
+        int take = 0;
+        if (amount - currSum >= coins[index]){
+            take = getMaxCombi(amount, coins, index, currSum + coins[index]);
         }
-        for (int i = 1; i< coins.length;i++){
-            for (int j = coins[i]; j<= amount;j++){
-                dp[j] = dp[j] + dp[j-coins[i]];
-            }
-        }
-        return dp[amount];
+        int maxCombi = skip + take;
+        memo.put(key, maxCombi);
+        return maxCombi;
     }
 }
