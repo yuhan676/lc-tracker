@@ -8,7 +8,7 @@ class Solution {
     public int getMaxCombi(int amount, int[] coins, int index, int currSum){
         //这里currsum剪枝是对的吗？coins[i] >=1
         if (index >= coins.length || currSum > amount) return 0;
-        if ( index < coins.length && currSum == amount) return 1;
+        if (currSum == amount) return 1;
         String key = index + "," + currSum;
         if (memo.containsKey(key)) return memo.get(key);
         int skip = getMaxCombi(amount, coins, index+1, currSum);
