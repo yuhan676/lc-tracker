@@ -8,60 +8,51 @@
  * }
  */
 class Solution {
+    Map<TreeNode, Integer> distanceM = new HashMap<>();
+    List<Integer> res = new LinkedList<>();
 
     public List<Integer> distanceK(TreeNode root, TreeNode target, int k) {
-        Map<TreeNode,TreeNode> parent = new HashMap<>();
-        markParents(root, parent);
-
-        //now it's bfs search for k steps away from target, so we'll need a way to mark if a node is visited 
-        Map<TreeNode, Boolean> visited = new HashMap<>();
-        //bfs using queue
-        Queue<TreeNode> q = new LinkedList<>();
-        q.offer(target);
-        visited.put(target, true);
-        while (k>0 && !q.isEmpty()){
-            int sz = q.size();
-            for (int i=0;i<sz;i++){
-                TreeNode top = q.poll();
-                if (top.left !=null && !visited.containsKey(top.left)){
-                    q.offer(top.left);
-                    visited.put(top.left, true);
-                }
-                if (top.right != null && !visited.containsKey(top.right)){
-                    q.offer(top.right);
-                    visited.put(top.right, true);
-                }
-                if (parent.containsKey(top) && !visited.containsKey(parent.get(top))){
-                    q.offer(parent.get(top));
-                    visited.put(parent.get(top), true);
-                }
-            }
-            k--;
-        }
-        List<Integer> ans = new ArrayList<>();
-        while (!q.isEmpty()){
-            ans.add(q.poll().val);
-        }
-        return ans;
-
+        findDistance(root, target);
+        traverse(root, k, distanceM.getOrDefault(root, -1));
+        return res;
     }
-    //mark the link between child - parent in a map, treat it as a graph
-    public void markParents(TreeNode root, Map<TreeNode, TreeNode>parent){
-        Queue<TreeNode> que = new LinkedList<>();
-        que.offer(root);
-        while (!que.isEmpty()){
-            int sz = que.size();
-            for (int i=0;i<sz;i++){
-                TreeNode curr = que.poll();
-                if (curr.left != null){
-                    parent.put(curr.left, curr);
-                    que.offer(curr.left);
-                }
-                if (curr.right != null){
-                    parent.put(curr.right,curr);
-                    que.offer(curr.right);
-                }
-            }
+
+    public int findDistance(TreeNode root, TreeNode target){
+        //did not find the target in this subtree
+        if (root == null) return -1;
+
+        if (distanceM.containsKey(root)){
+            return distanceM.get(root);
         }
+
+        if (root.val == target.val){
+            distanceM.put(root,0);
+            return 0;
+        }
+        //the target can only be found in one of the subtrees
+        int left = findDistance(root.left,target);
+        int right = findDistance(root.right,target);
+        if (left >=0){
+            distanceM.put(root,left +1);
+            return left +1;
+        }
+        if (right >= 0){
+            distanceM.put(root,right +1);
+            return right +1;
+        }
+        //didn't find it in this subtree
+        return -1;
     }
+
+    public void traverse(TreeNode root, int k, int currDistance){
+        if (root == null) return;
+
+        int distance = distanceM.getOrDefault(root, currDistance);
+        if(distance == k) res.add(root.val);
+        
+        traverse(root.left, k,distance+1);
+        traverse(root.right,k,distance+1);
+    }
+
+
 }
