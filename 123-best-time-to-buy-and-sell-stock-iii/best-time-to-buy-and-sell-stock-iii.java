@@ -1,8 +1,6 @@
 class Solution {
     public int maxProfit(int[] prices) {
         int[][] dp = new int[prices.length][5];
-        // money of no action
-        dp[0][0] = 0;
         // money of first time holding
         dp[0][1] = -prices[0];
         // money of first time not holding
