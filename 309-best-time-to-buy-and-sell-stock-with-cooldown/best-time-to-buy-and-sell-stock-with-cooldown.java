@@ -1,21 +1,26 @@
 class Solution {
+    Map<String, Integer> memo = new HashMap<>();
     public int maxProfit(int[] prices) {
-        // 4 status: holding, continue to not hold, nothold because selling today, cooling day 
-        int hold = -prices[0];
-        int notHold = 0;
-        int sell = 0;
-        int cool = 0;
-        for (int i = 1; i<prices.length;i++){
-            int prehold = hold;
-            int prenotHold = notHold;
-            int presell = sell;
-            int precool = cool;
-
-            hold = Math.max(prehold, Math.max(prenotHold - prices[i], precool - prices[i]));
-            notHold = Math.max(prenotHold, precool);
-            sell = prehold + prices[i];
-            cool = presell;
+        return dfs(prices, 0, 0);
+    }
+    private int dfs(int[] prices, int index, int holding){
+        if (index >= prices.length) return 0;
+        String key = index + "," + holding;
+        if (memo.containsKey(key)) return memo.get(key);
+        int res;
+        if (holding == 1){
+            int hold = dfs(prices, index +1, 1);
+            //卖的话，index+1就不能有动作，直接从index+2不持有那天开始才能有动作买入
+            int sell = prices[index] + dfs(prices, index+2,0);
+            res = Math.max(hold,sell);
+        }else{
+            //不持有不买
+            int skip = dfs(prices, index +1, 0);
+            //不持有，买入
+            int buy = dfs(prices, index +1, 1) - prices[index];
+            res = Math.max(skip,buy);
         }
-        return Math.max(notHold, Math.max(sell,cool));
+        memo.put(key,res);
+        return res;
     }
 }
