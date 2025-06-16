@@ -1,7 +1,5 @@
 class Solution {
-    public int maxProfit(int[] prices, int fee) {
-        int[][] dp = new int[prices.length][2];
-        // 0 = hold, 1 = not hold;
+    public int maxProfit(int[] prices, int fee) {        // 0 = hold, 1 = not hold;
 
         //第一天买入
         int hold = -prices[0];
