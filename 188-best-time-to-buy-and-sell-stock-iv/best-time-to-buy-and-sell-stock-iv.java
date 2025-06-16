@@ -1,27 +1,25 @@
 class Solution {
-    Map<String, Integer> memo = new HashMap<>();
     public int maxProfit(int k, int[] prices) {
-        return dfs(prices, 0, 0, k);
-    }
-    private int dfs(int[] prices, int holding, int index, int remTransac){
-        if (index >= prices.length || remTransac == 0){
-            return 0;
+        int[][] dp = new int[prices.length][2*k];
+        for (int i = 0; i< 2*k; i++){
+            if (i%2 ==0){
+                dp[0][i] = -prices[0];
+            }
         }
-        String key = index + "," + holding + "," + remTransac;
-        if (memo.containsKey(key)) return memo.get(key);
-        //holding choice: sell or do nothing
-        //not holding choise: buy or do nothing
-        int doNothing = dfs(prices, holding, index +1, remTransac);
-        int doSomething;
-        if (holding == 1){
-            //do selling
-            doSomething = dfs(prices, 0, index +1, remTransac - 1) + prices[index];
-        }else{
-            //do buying
-            doSomething = dfs(prices, 1, index +1, remTransac) - prices[index];
+        for (int i = 1; i< prices.length;i++){
+            for (int j = 0; j< 2*k; j++){
+                if (j%2!= 0){
+                    dp[i][j] = Math.max(dp[i-1][j], dp[i-1][j-1] + prices[i]);
+                }else{
+                    if (j == 0){
+                        dp[i][j] = Math.max(dp[i-1][j], - prices[i]);
+                    }else{
+                        dp[i][j] = Math.max(dp[i-1][j], dp[i-1][j-1] - prices[i]);
+                    }
+                    
+                }
+            }
         }
-        int val = Math.max(doNothing, doSomething);
-        memo.put(key, val);
-        return val;
+        return dp[prices.length-1][2*k-1];
     }
 }
