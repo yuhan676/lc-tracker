@@ -14,6 +14,6 @@ class Solution {
             hold = Math.max(prevHold, prevNotHold - prices[i]);
             notHold = Math.max(prevNotHold, prevHold + prices[i] - fee);
         }
-        return Math.max(hold,notHold);
+        return notHold;
     }
 }
