@@ -2,13 +2,18 @@ class Solution {
     public int maxProfit(int[] prices, int fee) {
         int[][] dp = new int[prices.length][2];
         // 0 = hold, 1 = not hold;
-        dp[0][0] = -prices[0];
-        dp[0][1] = 0;
+
+        //第一天买入
+        int hold = -prices[0];
+        //第一天卖出就亏钱了所以not hold选择不买入
+        int notHold = 0;
         for (int i = 1; i<prices.length;i++){
-            //hold 
-            dp[i][0] = Math.max(dp[i-1][0], dp[i-1][1] - prices[i]);
-            dp[i][1] = Math.max(dp[i-1][1], dp[i-1][0] + prices[i] - fee);
+            int prevHold = hold;
+            int prevNotHold = notHold;
+
+            hold = Math.max(prevHold, prevNotHold - prices[i]);
+            notHold = Math.max(prevNotHold, prevHold + prices[i] - fee);
         }
-        return Math.max(dp[prices.length-1][1], dp[prices.length-1][0]);
+        return Math.max(hold,notHold);
     }
 }
