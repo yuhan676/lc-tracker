@@ -1,19 +1,19 @@
 class Solution {
     public int lengthOfLIS(int[] nums) {
-        int res = 1;
-        //dp[i]的意思：以i结尾的子序列的最大长度
-        int[] dp = new int[nums.length];
-        //每个元素作为结尾的最长子序列的初始值：只包括它自己，==1
-        Arrays.fill(dp, 1);
-        for (int i = 1; i<nums.length;i++){
-            for (int j = 0; j<i;j++){
-                //每个元素要和从0到它本身的元素对比
-                if (nums[i]>nums[j]){
-                    dp[i] = Math.max(dp[i], dp[j]+1);
-                }
-                res = dp[i] > res ? dp[i]:res;
+        List<Integer> sub = new ArrayList<>();
+        for (int num: nums){
+            int index = Collections.binarySearch(sub, num);
+            //假如sub里没找到num，库函数返回值是一个负数，需要处理以后才能变成插入的index
+            if (index<0) index = -(index+1);
+            if (index < sub.size()){
+                sub.set(index, num);
+            }else{
+                //假如sub中所有元素都比num小，那么index就会==sub.size()，也就是在最后一位加入
+                sub.add(num);
             }
         }
-        return res;
+        //sub的大小就是最长递增子序列的大小
+        return sub.size();
     }
+
 }
