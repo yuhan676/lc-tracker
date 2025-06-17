@@ -59,6 +59,44 @@ class Solution {
     }
 }
 ```
+### 拓展：使用binary search构成O(n log n )时间复杂度的解法
+* 具体见：notion 错题本： 动态规划子序列篇
+```java
+class Solution {
+    public int lengthOfLIS(int[] nums) {
+        List<Integer> sub = new ArrayList<>();
+        for (int num: nums){
+            int index = indexInSub(sub, num);
+            //假如sub中间可以插入这一个元素，那我们就把插入位置的元素替换掉（也就是替换掉了>= num的最小元素）
+            if (index < sub.size()){
+                sub.set(index, num);
+            }else{
+                //假如sub中所有元素都比num小，那么index就会==sub.size()，也就是在最后一位加入
+                sub.add(num);
+            }
+        }
+        //sub的大小就是最长递增子序列的大小
+        return sub.size();
+    }
+
+    //output: index to insert
+    //input: list of integer, number to insert
+    //method: binary search
+    private int indexInSub(List<Integer> sub, int target){
+        int left = 0, right = sub.size()-1;
+        while(left <= right){
+            int mid = left + (right-left)/2;
+            if (sub.get(mid) == target) return mid;
+            else if (sub.get(mid) < target){
+                left = mid +1;
+            }else{
+                right = mid -1;
+            }
+        }
+        return left;
+    }
+}
+```
 ## 674. Longest Continuous Increasing Subsequence
 * https://leetcode.com/problems/longest-continuous-increasing-subsequence/description/
 * 文章：https://programmercarl.com/0674.%E6%9C%80%E9%95%BF%E8%BF%9E%E7%BB%AD%E9%80%92%E5%A2%9E%E5%BA%8F%E5%88%97.html#%E7%AE%97%E6%B3%95%E5%85%AC%E5%BC%80%E8%AF%BE
