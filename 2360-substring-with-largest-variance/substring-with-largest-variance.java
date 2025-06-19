@@ -1,7 +1,6 @@
 class Solution {
     //卡丹算法变体解法，没有reverse overhead
     //时间复杂度： 26 ^2 * n
-    //每一组a，b遍历string两次（一次正序，一次倒序）
     public int largestVariance(String s) {
         int res = 0;
         int[] count = new int[26];
@@ -41,34 +40,5 @@ class Solution {
             }
         }
         return res;
-    }
-
-    private int kadane(String s, char a, char b){
-        int maxVar = 0;
-        boolean hasa = false;
-        boolean hasb = false;
-        int diff= 0;
-        for (char c: s.toCharArray()){
-            if (c!=a&& c!=b){
-                continue;
-            }
-            if (c==a){
-                hasa = true;
-                diff ++;
-            }
-            if (c==b){
-                hasb = true;
-                diff --;
-            }
-            if (diff<0){
-                diff = 0;
-                hasa = false;
-                hasb = false;
-            }
-            if (hasa && hasb){
-                maxVar = Math.max(maxVar, diff);
-            }
-        }
-        return maxVar;
     }
 }
