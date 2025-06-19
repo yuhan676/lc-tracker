@@ -1,23 +1,43 @@
 class Solution {
-    //卡丹算法解法
-    //时间复杂度： 26 ^2 * n, charset最大的话就是每个字母都包括
+    //卡丹算法变体解法，没有reverse overhead
+    //时间复杂度： 26 ^2 * n
     //每一组a，b遍历string两次（一次正序，一次倒序）
     public int largestVariance(String s) {
         int res = 0;
-        Set<Character> charset = new HashSet<>();
+        int[] count = new int[26];
         for (char c: s.toCharArray()){
-            charset.add(c);
+            count[c-'a'] ++;
         }
         //制造a,b的比较pair
-        for (char a:charset){
-            for (char b:charset){
+        for (int i = 0; i<26;i++){
+            for (int j =0; j<26;j++){
                 //假如两个字母一样，就没有比较的意义了
-                if (a==b) continue;
-                //这里的一个易错点：kadane(s,a,b)和kadane(s,b,a)两种情况（a比b多，b比a多）是由两层for循环保证都会call到的
-                //但是我们在找'a比b多‘的情况下，假如我们的string是baa，那一上来diff就变成了-1，diff归0，hasB变成false，即使之后diff变成2（2个a,++两次），只有在hasA, hasB的情况下才会更新maxvar的数值，所以解决办法只能是后序遍历一遍，遍历顺序变成aab，就能准确找到a比b多的时候的var
-                res = Math.max(res, kadane(s,a,b));
-                //记得string本身不可变，但是sb可以，reverse的时间复杂度也是O(n)
-                res = Math.max(res, kadane(new StringBuilder(s).reverse().toString(),a,b));
+                //假如字母根本没出现，也根本没必要构造pair
+                if (i == j || count[i] == 0 || count[j] == 0) continue;
+                
+                int countA = 0;
+                int countB = 0;
+                int remainB = count[j];
+                int currMaxVar = 0;
+
+                for(char c:s.toCharArray()){
+                    if (c-'a' == i) countA ++;
+                    if (c-'a' == j) {
+                        countB ++;
+                        remainB --;
+                    }
+                    if (countB >0){
+                        //反正肯定不会<0
+                        currMaxVar = Math.max(currMaxVar, countA-countB);
+                    }
+                    //后面还有b，再拓展窗口也只会变得更负，不如直接重制
+                    if (countA < countB && remainB >0){
+                        countA = 0;
+                        countB = 0;
+                    }
+                }
+                //这个a,b pair比较完了，看看它的currmaxvar 和res谁更大
+                res = Math.max(currMaxVar, res);
             }
         }
         return res;
