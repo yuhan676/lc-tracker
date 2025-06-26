@@ -23,8 +23,7 @@ class Solution {
                 maxIndex = i;
             }
         }
-        System.out.println(Arrays.toString(left));
-        System.out.println(Arrays.toString(right));
+
         int res = 0;
 
         for (int i =0;i<n;i++){
