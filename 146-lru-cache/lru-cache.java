@@ -1,50 +1,43 @@
 class LRUCache {
-    //double ended list to store the keys
-    //弄成private，所以只有get和put才能改变它
-    //这两个是虚拟头和尾巴节点
-    private DoublyLinkedNode oldest;
-    private DoublyLinkedNode newest;
 
-    //map for quick search: search the node
-    private Map<Integer, DoublyLinkedNode> cache;
-    
-    private int capacity;
+    private DoubLinkNode oldest;
+    private DoubLinkNode newest;
+
+    private Map<Integer, DoubLinkNode> cache;
+
+    private int cap;
 
     public LRUCache(int capacity) {
-        this.capacity = capacity;
+        this.oldest = new DoubLinkNode(0,0);
+        this.newest = new DoubLinkNode(0,0);
+        this.cap = capacity;
         this.cache = new HashMap<>();
-        this.oldest = new DoublyLinkedNode(0,0);
-        this.newest = new DoublyLinkedNode(0,0);
         this.oldest.next = this.newest;
         this.newest.prev = this.oldest;
     }
-
-    private void remove(DoublyLinkedNode node){
-        DoublyLinkedNode prev = node.prev;
-        DoublyLinkedNode next = node.next;
+    //insert at the 'newest' end
+    private void insert(DoubLinkNode node){
+        DoubLinkNode prev = newest.prev;
+        DoubLinkNode next = newest;
+        prev.next = node;
+        node.prev = prev;
+        node.next = next;
+        next.prev = node;
+    }
+    private void remove(DoubLinkNode node){
+        DoubLinkNode prev = node.prev;
+        DoubLinkNode next = node.next;
         prev.next = next;
         next.prev = prev;
-    }
-    //在latest的前面的地方加入
-    //latest是虚拟尾巴节点
-    private void insert(DoublyLinkedNode node){
-        DoublyLinkedNode prev = newest.prev;
-        DoublyLinkedNode next = newest;
-        prev.next = next.prev = node;
-        node.next = next;
-        node.prev = prev;
     }
     
     public int get(int key) {
         if (cache.containsKey(key)){
-            DoublyLinkedNode node = cache.get(key);
-            //访问了以后要插入到最前面
+            DoubLinkNode node = cache.get(key);
             remove(node);
             insert(node);
-            //找到了，return node.val
-            return node.val;
+            return node.v;
         }
-        //找不到，return -1
         return -1;
     }
     
@@ -52,30 +45,27 @@ class LRUCache {
         if (cache.containsKey(key)){
             remove(cache.get(key));
         }
-        DoublyLinkedNode newNode = new DoublyLinkedNode(key, value);
-        cache.put(key, newNode);
+        DoubLinkNode newNode = new DoubLinkNode (key,value);
+        cache.put(key,newNode);
         insert(newNode);
-        //如果满了，就把最后一个顶出去
-        //cache.size()记录所有合法节点（不包括oldest，newest）
-        if(cache.size() > capacity){
-            //记住oldest是虚拟头节点
-            DoublyLinkedNode lru = oldest.next;
+
+        if (cache.size() > cap){
+            DoubLinkNode lru = oldest.next; 
             remove(lru);
-            //在cachemap里删掉这个节点
-            cache.remove(lru.key);
+            cache.remove(lru.k);
         }
     }
 }
 
-class DoublyLinkedNode{
-    int key;
-    int val;
-    DoublyLinkedNode prev;
-    DoublyLinkedNode next;
+class DoubLinkNode{
+    int k;
+    int v;
+    DoubLinkNode prev;
+    DoubLinkNode next;
 
-    public DoublyLinkedNode(int key, int val){
-        this.key = key;
-        this.val = val;
+    public DoubLinkNode(int key, int val){
+        this.k = key;
+        this.v = val;
         this.prev = null;
         this.next = null;
     }
