@@ -202,6 +202,7 @@ class Solution {
 * 讲解： https://programmercarl.com/0707.%E8%AE%BE%E8%AE%A1%E9%93%BE%E8%A1%A8.html
 
 ### 代码实现
+* 二刷发现的难点：不是很好理解什么叫indexth node? 是这个意思：dummyhead->node0, 这里的第一个合法node的index就是0，而不是1
 * 难点1：后面几个和index有关的方法记得看题：他们想要的是indexth，也就是说加了虚拟头节点以后第1个index就是第一个node（真正的头）,要注意处理curr.next = null的情况
 * 难点2:什么时候用for，什么时候用while分清楚（while可以用在在结尾加入节点，for用于在链表中间添加节点）
 * 难点3:if check可以留给极端条件。就不需要另外加入else block给正常情况下需要运行的代码了
@@ -299,6 +300,146 @@ class MyLinkedList {
  * obj.addAtIndex(index,val);
  * obj.deleteAtIndex(index);
  */
+```
+* 二刷： 可以直接用array list而不是自己设计节点
+  ```java
+  class MyLinkedList {
+
+ArrayList<Integer> arr;
+
+    MyLinkedList() {
+        arr=new ArrayList<>();
+    }
+    
+    int get(int index) {
+        // System.out.println(arr.toString());
+        if(index<0||index>=arr.size()) return -1;
+        else{
+            return arr.get(index);
+        }
+    }
+    
+    void addAtHead(int val) {
+        arr.add(0,val);
+        // System.out.println(arr.toString());
+        
+    }
+    
+    void addAtTail(int val) {
+        arr.add(val);
+        //  System.out.println(arr.toString());
+    }
+    
+    void addAtIndex(int index, int val) {
+        
+         if(index>=0 && index<=arr.size()){
+            arr.add(index,val);
+        }
+        //  System.out.println(arr.toString());
+    }
+    
+    void deleteAtIndex(int index) {
+        if(index>=0 && index<arr.size()){
+            arr.remove(index);
+        }
+        //  System.out.println(arr.toString());
+    }
+}
+```
+* 二刷： 设计双向链表，需要考虑到nullpointer. prev会出错，所以需要额外的check
+```java
+class MyLinkedList {
+
+    LinkedNode dummyHead;
+    int size;
+
+    public MyLinkedList() {
+        this.size = 0;
+        this.dummyHead = new LinkedNode(0);
+    }
+    
+    public int get(int index) {
+        if (index <0 || index >= size){
+            return -1;
+        }
+        LinkedNode curr = dummyHead;
+        for (int i = 0; i<= index; i++){
+            curr = curr.next;
+        }
+        return curr.val;
+    }
+    
+    public void addAtHead(int val) {
+        LinkedNode newNode = new LinkedNode(val);
+        LinkedNode originalHead = dummyHead.next;
+        dummyHead.next = newNode;
+        newNode.prev = dummyHead;
+        if (originalHead != null){
+            originalHead.prev = newNode;
+            newNode.next = originalHead;
+        }
+        size ++;
+    }
+    
+    public void addAtTail(int val) {
+        LinkedNode newNode = new LinkedNode(val);
+        LinkedNode curr = dummyHead;
+        for (int i = 0; i < size; i++){
+            curr = curr.next;
+        }
+        curr.next = newNode;
+        newNode.prev = curr;
+        size ++;
+    }
+    
+    public void addAtIndex(int index, int val) {
+        if (index <0 || index > size){
+            return;
+        }
+        LinkedNode curr = dummyHead;
+        LinkedNode newNode = new LinkedNode(val);
+        for (int i = 0; i< index;i++){
+            curr = curr.next;
+        }
+        LinkedNode originalNext = curr.next;
+        if (originalNext!= null){
+            originalNext.prev = newNode;
+            newNode.next = originalNext;
+        }
+        curr.next = newNode;
+        newNode.prev = curr;
+        size ++;
+    }
+    
+    public void deleteAtIndex(int index) {
+        if (index <0 || index >= size){
+            return;
+        }
+        LinkedNode curr = dummyHead;
+        for (int i = 0; i< index; i++){
+            curr = curr.next;
+        }
+        LinkedNode next2 = curr.next.next;
+
+        if (next2!= null){
+            next2.prev =curr;
+        }
+        curr.next = next2;
+        size --;
+    }
+}
+
+class LinkedNode {
+    int val;
+    LinkedNode prev;
+    LinkedNode next;
+
+    public LinkedNode(int val){
+        this.val = val;
+        this.prev = null;
+        this.next = null;
+    }
+}
 ```
 
 ## 206. Reverse Linked List
