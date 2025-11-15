@@ -136,7 +136,7 @@ class Solution {
 ```
 ## 59. Spiral Matrix II
 <img width="974" alt="Screenshot 2025-02-27 at 22 44 49" src="https://github.com/user-attachments/assets/508cdc01-af06-45e6-9ec8-21a8b4246257" />
-
+* https://leetcode.com/problems/spiral-matrix-ii/description/
 * 处理左开右闭需要用offset来定义边界
 * 如果是n为odd，需要在startX, startY，loop，offset，count更新以后填充最后一个值
 *time: O(n^2) (have to visit each index in the 2d array
