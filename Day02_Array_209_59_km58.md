@@ -91,6 +91,49 @@ class Solution {
     }
 }
 ```
+
+** 二刷： 容易搞混什么时候increment i
+```java
+class Solution {
+    public int minSubArrayLen(int target, int[] nums) {
+        int minL = Integer.MAX_VALUE;
+        int i = 0;
+        int sum = 0;
+        for (int j = 0; j< nums.length;j++){
+            sum += nums[j];
+            int len = j-i + 1;
+            while (i <= j && sum >= target){
+                minL = Math.min(minL, j - i + 1);
+                i++;//这里记得不能先increment i，不然容易把已经increment的i index的内容剪掉
+                sum -= nums[i];
+            }
+        }
+        return minL == Integer.MAX_VALUE ? 0: minL;
+    }
+}
+```
+** 修bug
+```java
+class Solution {
+    public int minSubArrayLen(int target, int[] nums) {
+        int minL = Integer.MAX_VALUE;
+        int i = 0;
+        int sum = 0;
+        for (int j = 0; j< nums.length;j++){
+            sum += nums[j];
+            //这里没必要有len calculation，因为我们在验证了sum 》= target了以后才能确保这个窗口合适
+            int len = j-i + 1;
+            while (sum >= target){
+                minL = Math.min(minL, j - i + 1);
+                //先计算剪去了i以后sum有多少，再移动i
+                sum -= nums[i];
+                i++;
+            }
+        }
+        return minL == Integer.MAX_VALUE ? 0: minL;
+    }
+}
+```
 ## 59. Spiral Matrix II
 <img width="974" alt="Screenshot 2025-02-27 at 22 44 49" src="https://github.com/user-attachments/assets/508cdc01-af06-45e6-9ec8-21a8b4246257" />
 
