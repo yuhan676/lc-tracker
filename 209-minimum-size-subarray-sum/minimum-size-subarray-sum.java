@@ -6,7 +6,7 @@ class Solution {
         for (int j = 0; j< nums.length;j++){
             sum += nums[j];
             int len = j-i + 1;
-            while (i <= j && sum >= target){
+            while (sum >= target){
                 minL = Math.min(minL, j - i + 1);
                 sum -= nums[i];
                 i++;//这里记得不能先increment i，不然容易把已经increment的i index的内容剪掉
