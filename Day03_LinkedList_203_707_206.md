@@ -176,6 +176,27 @@ class Solution {
     }
 }
 ```
+### 易错点
+* 到底什么时候才curr = curr.next? 为什么删除节点之后，不做curr=curr.next?, 两者为什么是if else关系？
+* 这是因为，删除了next.val = val这个节点以后，新的next的val也有可能是val，无论删不删除节点都curr=curr.next的话，容易错过一些节点的检查（假设val = 2, linked list = 1->2->2->2->2)
+```java
+class Solution {
+    public ListNode removeElements(ListNode head, int val) {
+        ListNode dummyHead = new ListNode(0, head);
+        ListNode curr = dummyHead;
+        while (curr.next!= null){
+            ListNode next = curr.next;
+            ListNode next2 = curr.next.next;
+            if (next.val == val){
+                curr.next = next2;
+            }
+            //这样是不行的，删除完节点以后接上下一个新节点，也要进行检查
+            curr = curr.next;
+        }
+        return dummyHead.next;
+    }
+}
+```
 ## 707. Design Linked List
 * https://leetcode.com/problems/design-linked-list/description/
 * 讲解： https://programmercarl.com/0707.%E8%AE%BE%E8%AE%A1%E9%93%BE%E8%A1%A8.html
