@@ -245,6 +245,34 @@ public class Solution {
     }
 }
 ```
+
+* 二刷笔记：难点：最后是return fast还是null？
+```java
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        ListNode fast = head;
+        ListNode slow = head;
+
+        while (fast != null && fast.next  != null){
+            fast = fast.next.next;
+            slow = slow.next;
+
+            if (fast == slow){//有环才会fast == slow
+                ListNode slow2 = head;
+                while (slow2 != slow){
+                    slow2 = slow2.next;
+                    slow = slow.next;
+                }
+                return slow;
+            }
+        }
+        //if we return fast here (imagine we have head = [1] no loop)
+        //we'll get loop at position 1, where there's no loop
+        //前面如果不符合fast == slow, 就没有loop，所以这里直接返回loop
+        return null;
+    }
+}
+```
 ### 总结
 * 交叉链表和环形链表可以使用同样的解
 * 一般涉及到 增删改操作，用虚拟头结点都会方便很多， 如果只能查的话，用不用虚拟头结点都差不多。 
