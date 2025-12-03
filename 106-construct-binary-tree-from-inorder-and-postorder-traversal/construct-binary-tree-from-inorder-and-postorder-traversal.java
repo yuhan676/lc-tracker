@@ -14,25 +14,26 @@
  * }
  */
 class Solution {
-    Map<Integer, Integer> inorderValIndexMap;
-
+    //in: left, root, right
+    //post: left, right, root
     public TreeNode buildTree(int[] inorder, int[] postorder) {
-        inorderValIndexMap = new HashMap<>();
-        for (int i=0; i<inorder.length; i++){ 
-            inorderValIndexMap.put(inorder[i],i);
+        if (inorder. length == 0){
+            return null;
         }
-        return helper(inorder, 0, inorder.length-1, postorder, 0, postorder.length-1);
-    }
-    private TreeNode helper(int[] inorder, int inS, int inE, int[] postorder, int postS, int postE){
-        if (inS > inE || postS > postE) return null;
-        int rootval = postorder[postE];
-        TreeNode root = new TreeNode(rootval);
-        //获得inorder中root的指针
-        int index = inorderValIndexMap.get(rootval);
-        int leftSize = index - inS;
+        int rootVal = postorder[postorder.length - 1];
+        int i = 0;
+        for (; i< inorder.length;i++){
+            if (inorder[i]==rootVal) break;
+        }
+        TreeNode root = new TreeNode(rootVal);
+        int[] leftIn = Arrays.copyOfRange(inorder, 0, i);
+        int[] rightIn = Arrays.copyOfRange(inorder, i+1, inorder.length);
 
-        root.left = helper(inorder,inS,index-1, postorder,postS, postS + leftSize -1);
-        root.right = helper(inorder, index +1, inE, postorder, postS + leftSize, postE-1);
+        int rightSize = inorder.length - 1 - i;
+        int[] leftPost = Arrays.copyOfRange(postorder, 0, i);
+        int[] rightPost = Arrays.copyOfRange(postorder, i, i + rightSize);
+        root.left = buildTree(leftIn, leftPost);
+        root.right = buildTree(rightIn, rightPost);
         return root;
     }
 }
