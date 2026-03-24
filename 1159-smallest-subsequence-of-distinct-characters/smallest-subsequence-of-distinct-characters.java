@@ -10,7 +10,6 @@ class Solution {
         Stack<Character> st = new Stack<>();
         for (int i = 0; i<len;i++){
             char c = s.charAt(i);
-            System.out.println("new char: " + c);
             if (seen[c - 'a'] > 0) {
                 continue;
             }
@@ -21,9 +20,9 @@ class Solution {
             seen[c - 'a'] ++;
         }
         StringBuilder sb = new StringBuilder();
-        while (!st.isEmpty()){
-            sb.append(st.pop());
+        for (char c: st){
+            sb.append(c);
         }
-        return sb.reverse().toString();
+        return sb.toString();
     }
 }
