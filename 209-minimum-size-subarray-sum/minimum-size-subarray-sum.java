@@ -1,16 +1,18 @@
 class Solution {
     public int minSubArrayLen(int target, int[] nums) {
-        int minL = Integer.MAX_VALUE;
-        int i = 0;
-        int sum = 0;
-        for (int j = 0; j< nums.length;j++){
+        int sum = 0,res = Integer.MAX_VALUE,i = 0;
+        //[2,3,1,2,4,3] targert = 7;
+        //j=1,i=0;
+        //sum=5;
+        //res = 2;
+        for(int j =0; j< nums.length;j++){
             sum += nums[j];
-            while (sum >= target){
-                minL = Math.min(minL, j - i + 1);
+            while (sum >= target){ 
+                res = Math.min(res,j-i+1);
                 sum -= nums[i];
-                i++;//这里记得不能先increment i，不然容易把已经increment的i index的内容剪掉
+                i++;
             }
         }
-        return minL == Integer.MAX_VALUE ? 0: minL;
+        return (res==Integer.MAX_VALUE)?0:res;
     }
 }
